@@ -54,10 +54,18 @@ foreach ($mailboxes as $mailboxSpec) {
             imap_reopen($mailboxConnection, $mailboxSpec); // Ignores the fail case, as it will test the ping again.
         }
 		$headers = imap_fetchheader($mailboxConnection, $id, FT_UID);
+        if (
+            stripos($headers, "multipart/encrypted") !== false ||
+            stripos($headers, "application/pgp-encrypted") !== false
+        ) {
+            echo "Skipping message {$id}, it looks already encrypted (header)" . PHP_EOL;
+            continue;
+        }
+
 		$body = imap_body($mailboxConnection, $id, FT_UID);
 
 		if (stripos($body, "-----BEGIN PGP MESSAGE-----") !== false) {
-            echo "Skipping message, it looks already encrypted" . PHP_EOL;
+            echo "Skipping message {$id}, it looks already encrypted (body)" . PHP_EOL;
             continue;
         }
 
