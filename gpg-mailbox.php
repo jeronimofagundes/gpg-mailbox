@@ -59,6 +59,12 @@ foreach ($mailboxes as $mailboxSpec) {
         }
 		$subject = $headerInfo->subject;
 
+		if (stripos($subject, "Retrieval using the IMAP4 protocol failed") !== false) {
+            echo "Skipping folder, it looks like an exchange calendar" . PHP_EOL;
+            imap_close($mailboxConnection);
+            continue 2;
+        }
+
 		$originalPath = tempnam(".", "imap_");
 
 		if (false === $originalPath) {
