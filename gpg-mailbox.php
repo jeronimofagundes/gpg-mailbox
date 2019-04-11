@@ -44,9 +44,12 @@ foreach ($mailboxes as $mailboxSpec) {
         continue;
     }
 
-    echo count($idsToEncrypt) . " messages to check" . PHP_EOL;
+    $total = count($idsToEncrypt);
+    echo  "{$total} messages to check" . PHP_EOL;
+    $i=1;
 
     foreach ($idsToEncrypt as $id) {
+        echo ($i++) . "/{$total} ";
         while(!imap_ping($mailboxConnection)) {
             imap_reopen($mailboxConnection, $mailboxSpec); // Ignores the fail case, as it will test the ping again.
         }
