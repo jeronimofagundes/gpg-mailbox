@@ -51,6 +51,11 @@ foreach ($mailboxes as $mailboxSpec) {
 		$headers = imap_fetchheader($mailboxConnection, $id, FT_UID);
 		$body = imap_body($mailboxConnection, $id, FT_UID);
 
+		if (stripos($body, "-----BEGIN PGP MESSAGE-----") !== false) {
+            echo "Skipping message, it looks already encrypted" . PHP_EOL;
+            continue;
+        }
+
 		$msgNo = imap_msgno($mailboxConnection, $id);
 		$headerInfo = imap_headerinfo($mailboxConnection, $msgNo);
 		if ($headerInfo === false) {
